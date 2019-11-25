@@ -54,7 +54,8 @@ namespace Pradadge.Data.DataRepository.Setup
                    select new ProductViewModel
                    {
                        productId = entity.ProductId,
-                       productName = entity.ProductName + " " + entity.Width.ToString() + ("x" + entity.Lenght.ToString()),
+                       productName = entity.ProductName,
+                       //+ " " + entity.Width.ToString() + ("x" + entity.Lenght.ToString()),
                        productDescription = entity.ProductDescription,
                        productCode = entity.ProductCode,
                        productBarCode = entity.ProductBarCode, 
@@ -171,8 +172,21 @@ namespace Pradadge.Data.DataRepository.Setup
                           {
                               productId = p.productId,
                               productName = p.productName + " " + p.size,
-                              count =  GetQuantityLeft(p.productId)
+                              count =  GetQuantityLeft(p.productId),
+                            
         });
+            return result.Distinct().ToList();
+        }
+
+        public List<ProductFilter> ProductSort(string search)
+        {
+            var result = (from p in GetAllProducts()
+                          where p.productName.ToLower().Contains(search.ToLower()) || p.productBarCode.ToLower().Contains(search.ToLower())
+                          select new ProductFilter
+                          {
+                              productId = p.productId,
+                              productName = p.productName + " " + p.size,
+                          });
             return result.Distinct().ToList();
         }
 

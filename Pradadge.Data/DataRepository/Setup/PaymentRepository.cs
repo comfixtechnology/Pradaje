@@ -40,6 +40,27 @@ namespace Pradadge.Data.DataRepository.Setup
             return entity;
         }
 
+        public void AddPayments(PaymentViewModel entity)
+        {
+            var data = new tbl_Payment
+            {
+                PaymentId = entity.paymentId,
+                ActualAmount = entity.actualAmount,
+                BatchNo = entity.batchNo,
+                PaymentModeId = entity.paymentModeId,
+                PaymentDate = DateTime.Now,
+                RecievedAmount = entity.recievedAmount,
+                SalesTypeId = entity.salesTypeId,
+                TransactionStatusId = entity.transactionStatusId,
+                CreatedOn = DateTime.Now,
+                CreatedBy = "admin",
+                ModifiedOn = DateTime.Now,
+                ModifiedBy = "admin"
+            };
+
+            context.tbl_Payment.Add(data);
+        }
+
         private IQueryable<PaymentViewModel> AllPayment ()
         {
             return from entity in context.tbl_Payment

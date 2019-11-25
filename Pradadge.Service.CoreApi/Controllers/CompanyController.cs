@@ -58,7 +58,21 @@ namespace Pradadge.Service.CoreApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { success = false, message = e.Message });
             }
         }
-       
+        [HttpGet]
+        [Route("getcompany")]
+        public HttpResponseMessage GetCompanyId()
+        {
+            try
+            {
+                var data = companyrepository.GetCompanyById(1).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, new { success = true, result = data });
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, new { success = false, message = $"Error {e.Message}" });
+            }
+        }
+
 
         [HttpGet]
         [Route("getcompany/{id}")]

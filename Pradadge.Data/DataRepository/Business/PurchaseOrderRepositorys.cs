@@ -15,16 +15,16 @@ namespace Pradadge.Data.DataRepository.Business
     {
         private PradadgeContext context;
         private IReferenceManagerRepository reference;
-        private IStockCardRepositorys stockCard;
+        private IStockCardRepositorys Card;
         private IStockRepositorys stock;
         public PurchaseOrderRepositorys (PradadgeContext context,
             IStockRepositorys stock,
             IReferenceManagerRepository reference, 
-            IStockCardRepositorys stockCard)
+            IStockCardRepositorys Card)
         {
             this.context = context;
             this.reference = reference;
-            this.stockCard = stockCard;
+            this.Card = Card;
             this.stock = stock;
         }
 
@@ -37,23 +37,23 @@ namespace Pradadge.Data.DataRepository.Business
                                      .Where(c => c.PurchaseOrderDetailId == item.purchaseOrderDetailId)
                                      .FirstOrDefault();
                 order.IsRecieved = true;
-                //StockViewModel stork = AddStockItems(item, order);
-                //stock.AddStockEntries(stork);
+                StockViewModel stork = AddStockItems(item, order);
+                stock.AddStockEntries(stork);
 
-                var existingStock = context.tbl_Stock.Where(s => s.ProductId == item.productId).FirstOrDefault();
-                if (existingStock != null)
-                {
-                    existingStock.QuantitySupplied += item.quantity;
-                }
-                else
-                {
-                    StockViewModel stork = AddStockItems(item, order);
-                    stock.AddStockEntries(stork);
-                }
+                //var existingStock = context.tbl_Stock.Where(s => s.ProductId == item.productId).FirstOrDefault();
+                //if (existingStock != null)
+                //{
+                //    existingStock.QuantitySupplied += item.quantity;
+                //}
+                //else
+                //{
+                //    StockViewModel stork = AddStockItems(item, order);
+                //    stock.AddStockEntries(stork);
+                //}
 
                 if (context.SaveChanges() > 0)
                 {
-                    UpdateOrderifFullReceived(item.purchaseOrderId);
+                    UpdateOrderifFullyReceived(item.purchaseOrderId);
                     result = true;
                 }
                 else
@@ -69,23 +69,23 @@ namespace Pradadge.Data.DataRepository.Business
                         .FirstOrDefault();
             order.IsRecieved = true;
 
-            //StockViewModel stork = AddStockItems(entity, order);
-            //stock.AddStockEntries(stork);
+            StockViewModel stork = AddStockItems(entity, order);
+            stock.AddStockEntries(stork);
 
-            var existingStock = context.tbl_Stock.Where(s => s.ProductId == entity.productId).FirstOrDefault();
-            if (existingStock != null)
-            {
-                existingStock.QuantitySupplied += entity.quantity;
-            }
-            else
-            {
-                StockViewModel stork = AddStockItems(entity, order);
-                stock.AddStockEntries(stork);
-            }
+            //var existingStock = context.tbl_Stock.Where(s => s.ProductId == entity.productId).FirstOrDefault();
+            //if (existingStock != null)
+            //{
+            //    existingStock.QuantitySupplied += entity.quantity;
+            //}
+            //else
+            //{
+            //    StockViewModel stork = AddStockItems(entity, order);
+            //    stock.AddStockEntries(stork);
+            //}
 
             if (context.SaveChanges() > 0)
             {
-                UpdateOrderifFullReceived(entity.purchaseOrderId);
+                UpdateOrderifFullyReceived(entity.purchaseOrderId);
                 return SetOrderDetails(entity, order);
             }
             else
@@ -115,9 +115,26 @@ namespace Pradadge.Data.DataRepository.Business
                 stockCode = reference.ConfirmReferenceNo((int)ReferenceTypesEnum.Stock, 1)
 
             };
+
         }
 
-        private  void UpdateOrderifFullReceived(int purchaseOrderId)
+        private StockCardViewModel AddStockcardItems (OrderDetailViewModel entity, tbl_PurchaseOrderDetail order)
+        {
+            return new StockCardViewModel
+            {
+                dateRecieved = DateTime.Now,
+                quantityRecieved = order.Quantity,
+                //quantityRemaining = data.quantityRemaining,
+                stockId = context.tbl_Stock.FirstOrDefault(s=>s.ProductId == entity.productId).StockId,
+                createdOn = DateTime.Now,
+                //createdBy = order.CreatedBy,
+                lastDateUpdated = DateTime.Now
+
+            };
+            //Card.AddStockCarda(stockCard);
+        }
+
+        private  void UpdateOrderifFullyReceived(int purchaseOrderId)
         {
            var order= context.tbl_PurchaseOrderDetail.Where(p => p.PurchaseOrderId == purchaseOrderId && p.IsRecieved == false);
             if (!order.Any())

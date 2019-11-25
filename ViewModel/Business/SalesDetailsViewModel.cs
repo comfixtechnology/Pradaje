@@ -12,7 +12,7 @@ namespace Pradadge.ViewModel.Business
 
         public int paymentId { get; set; }
 
-        public string BatchNo { get; set; }
+        public string batchNo { get; set; }
 
         public int salesTypeId { get; set; }
 
@@ -24,7 +24,7 @@ namespace Pradadge.ViewModel.Business
          
         public int stockId { get; set; }
 
-        public decimal quantitySupplied { get; set;}
+        //public decimal quantitySupplied { get; set;}
 
         public int? customerId { get; set; }
 
@@ -40,7 +40,7 @@ namespace Pradadge.ViewModel.Business
 
         public decimal salesPrice { get; set; }
 
-        public decimal? amountRecieved { get; set; }
+        public decimal amountRecieved { get; set; }
 
         public string suppliedBy { get; set; }
 

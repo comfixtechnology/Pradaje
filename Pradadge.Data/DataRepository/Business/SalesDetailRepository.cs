@@ -15,15 +15,20 @@ namespace Pradadge.Data.DataRepository.Business
     {
         private PradadgeContext context;
         private IReferenceManagerRepository reference;
-        private IStockCardRepositorys stockCard;
+        private IStockCardRepositorys card;
         private IStockRepositorys stock;
+        private IPaymentRepository payment;
         public SalesDetailRepository (PradadgeContext context,
             IReferenceManagerRepository reference,
-            IStockCardRepositorys stockCard,
-            IStockRepositorys stock)
+            IStockCardRepositorys card,
+            IStockRepositorys stock,
+            IPaymentRepository payment)
         {
             this.context = context;
             this.reference = reference;
+            this.stock = stock;
+            this.card = card;
+            this.payment = payment;
         }
 
         public bool SaleProduct (List<SalesDetailsViewModel> orders)
@@ -36,13 +41,22 @@ namespace Pradadge.Data.DataRepository.Business
                 {
                     existingStock.QuantitySupplied -= item.quantity;
                 }
-                //else
-                //{
-                   // return false;
-                //}
+                
                 if (context.SaveChanges() > 0)
                 {
                     AddSalesDetails(item);
+                    var stockCard = new StockCardViewModel
+                    {
+                        dateRecieved = existingStock.DeliveryDate,
+                        quantityRecieved = existingStock.QuantitySupplied,
+                        //quantityRemaining = existingStock.QuantitySupplied - existingStock.QuantitySold,
+                        stockId = existingStock.StockId,
+                        createdOn = existingStock.CreatedOn,
+                        createdBy = existingStock.CreatedBy,
+                        lastDateUpdated = DateTime.Now
+
+                    };
+                    card.AddStockCarda(stockCard);
                     result = true;
                 }
                 else
@@ -55,7 +69,7 @@ namespace Pradadge.Data.DataRepository.Business
 
         }
 
-        public SalesDetailsViewModel AddSalesDetails (SalesDetailsViewModel entity)
+        public void AddSalesDetails (SalesDetailsViewModel entity)
         {
             var data = new tbl_SalesDetails
             {
@@ -68,15 +82,31 @@ namespace Pradadge.Data.DataRepository.Business
                 SalesPrice = entity.salesPrice,
                 AmountRecieved = entity.amountRecieved,
                 SuppliedBy = entity.suppliedBy,
-                SalesDate = DateTime.Now,
+                SalesDate = entity.salesDate,
                 PaymentId = entity.paymentId,
                 BatchNo = reference.ConfirmReferenceNo((int)ReferenceTypesEnum.Invoice, 1),
                 BranchId = entity.branchId
             };
 
             context.tbl_SalesDetails.Add(data);
-            context.SaveChanges();
-            return entity;
+            //context.SaveChanges();
+
+            var pay = new PaymentViewModel
+            {
+                batchNo = data.BatchNo,
+                recievedAmount = data.AmountRecieved,
+                actualAmount = data.tbl_Payment.ActualAmount,
+                paymentDate = data.SalesDate,
+                paymentModeId = data.tbl_Payment.PaymentModeId,
+                paymentMode = data.tbl_Payment.tbl_PaymentMode.PaymentMode,
+                transactionStatus = data.tbl_Payment.tbl_TransactionStatus.TransactionStatus,
+                transactionStatusId = data.tbl_Payment.TransactionStatusId,
+                createdBy = data.tbl_Payment.CreatedBy,
+                createdOn = data.tbl_Payment.CreatedOn,
+
+            };
+            payment.AddPayments(pay);
+            //return entity;
         }
 
         private IQueryable<SalesDetailsViewModel> AllSalesDetails ()
@@ -99,7 +129,7 @@ namespace Pradadge.Data.DataRepository.Business
                 suppliedBy = entity.SuppliedBy,
                 salesDate = entity.SalesDate,
                 paymentId = entity.PaymentId,
-                BatchNo = reference.ConfirmReferenceNo((int)ReferenceTypesEnum.Invoice, 1),
+                batchNo = reference.ConfirmReferenceNo((int)ReferenceTypesEnum.Invoice, 1),
                 branchId = entity.BranchId,
                 branchName = entity.tbl_Branch.BranchName
             };                          
@@ -133,7 +163,7 @@ namespace Pradadge.Data.DataRepository.Business
                 data.SuppliedBy = entity.suppliedBy;
                 data.SalesDate = DateTime.Now;
                 data.PaymentId = entity.paymentId;
-                data.BatchNo = entity.BatchNo;
+                data.BatchNo = entity.batchNo;
                 data.BranchId = entity.branchId;
             }               
             return context.SaveChanges() > 0;

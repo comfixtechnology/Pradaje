@@ -17,6 +17,7 @@ namespace Pradadge.Contract.DataRepositoryInterface.Setup
         bool UpdateProduct(ProductViewModel entity);
         bool DeleteOrder(ProductViewModel entity);
         List<ProductFilter> ProductSearch(string search);
+        List<ProductFilter> ProductSort(string search);
         List<ProductFilter> ProductStockDetails(int productId);
     }
 }

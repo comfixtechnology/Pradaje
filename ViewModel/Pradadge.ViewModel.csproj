@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\UserDetail.cs" />
+    <Compile Include="Account\UserResp.cs" />
     <Compile Include="Business\ReferenceManagerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setup\BanksViewModel.cs" />

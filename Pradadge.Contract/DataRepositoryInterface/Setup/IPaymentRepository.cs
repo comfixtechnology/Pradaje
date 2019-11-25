@@ -11,6 +11,7 @@ namespace Pradadge.Contract.DataRepositoryInterface.Setup
     {
         IEnumerable<PaymentViewModel> GetAllPayments();
         PaymentViewModel AddPayment(PaymentViewModel entity);
+        void AddPayments(PaymentViewModel entity);
         IQueryable<PaymentViewModel> GetPaymentById(int id);
         bool UPdatePaymentDetails(PaymentViewModel entity);
     }

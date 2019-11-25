@@ -18,11 +18,11 @@ namespace Pradadge.ViewModel.Business
 
         public int paymentModeId { get; set; }
 
-        public int paymentMode { get; set; }
+        public string paymentMode { get; set; }
 
         public int? transactionStatusId { get; set; }
 
-        public int? transactionStatus { get; set; }
+        public string transactionStatus { get; set; }
 
         public decimal recievedAmount { get; set; }
 
@@ -37,5 +37,7 @@ namespace Pradadge.ViewModel.Business
         public DateTime? modifiedOn { get; set; }
 
         public string modifiedBy { get; set; }
+
+        public decimal balance { get { return actualAmount - recievedAmount; } }
     }
 }

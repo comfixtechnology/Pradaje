@@ -40,6 +40,14 @@ namespace Pradadge.Service.CoreApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("sort")]
+        public IHttpActionResult ProductSort(string search)
+        {
+            var data = productrepository.ProductSort(search);
+            return Ok(data); // Request.CreateResponse(HttpStatusCode.OK, new { success = true, result = data, message = "Success" });
+        }
+
         [HttpPost]
         [Route("createproduct")]
         public HttpResponseMessage AddProduct([FromBody] ProductViewModel model)

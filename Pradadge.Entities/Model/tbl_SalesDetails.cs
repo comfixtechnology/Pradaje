@@ -23,7 +23,7 @@ namespace Pradadge.Entities.Model
 
         public decimal SalesPrice { get; set; }
 
-        public decimal? AmountRecieved { get; set; }
+        public decimal AmountRecieved { get; set; }
 
         public DateTime SalesDate { get; set; }
 

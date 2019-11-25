@@ -47,13 +47,11 @@ namespace Pradadge.Service.CoreApi.Controllers
         {
             try
             {
-                var data = salesdetailsRepository.AddSalesDetails(model);
-                if (data != null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, new { success = true, result = model, message = "The record Created Successfully" });
+                salesdetailsRepository.AddSalesDetails(model);
+                 return Request.CreateResponse(HttpStatusCode.OK, new { success = true, result = model, message = "The record Created Successfully" });
 
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, new { success = false, message = "The was an error creating this record" });
+               
+                //return Request.CreateResponse(HttpStatusCode.OK, new { success = false, message = "The was an error creating this record" });
             }
             catch (Exception e)
             {

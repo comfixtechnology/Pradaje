@@ -74,10 +74,11 @@ namespace Pradadge.Data.DataRepository.Business
             {
                 dateRecieved = data.DeliveryDate,
                 quantityRecieved = data.QuantitySupplied,
+                //quantityRemaining = data.quantityRemaining,
                 stockId = data.StockId,
                 createdOn = entity.createdOn,
                 createdBy = data.CreatedBy,
-                lastDateUpdated= DateTime.Now   
+                lastDateUpdated= DateTime.Now
 
             };
             card.AddStockCarda(stockCard);
